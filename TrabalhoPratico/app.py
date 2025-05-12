@@ -3,7 +3,7 @@ from datetime import datetime
 from CryptoUtils import gerar_chave, cifrar_dados, gerar_hmac, decifrar_dados
 import json
 import hmac
-
+import os
 
 app = Flask(__name__)
 
@@ -75,7 +75,12 @@ def decifrar():
     return jsonify({"mensagem_decifrada": plain_text})
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     import os
 
 port = int(os.environ.get("PORT", 5000))
 app.run(debug=True, port=port)
+=======
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, port=port)
+>>>>>>> Atualizar código Flask + start.sh script + Storage.json
