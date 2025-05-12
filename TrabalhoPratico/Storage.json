@@ -1,0 +1,16 @@
+{
+  "registos": [
+    {
+      "email": "teste@example.com",
+      "data_hora": "202505121750",
+      "criptograma": "da0f5bc8f0dbb789211fe7b48831bf1d6e91f52c11cbef6a40ee6fcb027d552423faeb7000fa49872c3f8a42e2a00a37",
+      "hmac": "e61f9aac8730b148c1efb3eb8ac07b2717c757712c518a4260b5faefec5ced1b"
+    },
+    {
+      "email": "teste@example.com",
+      "data_hora": "202505122156",
+      "criptograma": "6ff62e3113893f437f4a82396ff00d1c8553f99ae87817d796302e97f7247c70d994089bd36f93166e48b5f43f02e463",
+      "hmac": "f903e810e1abe6da7cd48826cafae3184556bb8d9720459ab2006f9f82106903"
+    }
+  ]
+}
