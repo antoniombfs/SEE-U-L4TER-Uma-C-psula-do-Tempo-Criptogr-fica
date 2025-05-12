@@ -1,0 +1,13 @@
+1. Cria o ficheiro no teu projeto:
+
+nano git-sync.sh
+
+
+Dá permissões de execução:
+
+chmod +x git-sync.sh
+
+
+Assim para sincronizar sincronizar:
+
+./git-sync.sh
