@@ -17,6 +17,11 @@ def verificar_chave():
     chave = gerar_chave(email, data_hora)
     return jsonify({"chave_hex": chave.hex(), "data_hora": data_hora})
 
+@app.route('/time', methods=['GET'])
+def server_time():
+    data_hora = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    return jsonify({"server_time": data_hora})
+
 @app.route('/cifrar', methods=['POST'])
 def cifrar():
     data = request.json
