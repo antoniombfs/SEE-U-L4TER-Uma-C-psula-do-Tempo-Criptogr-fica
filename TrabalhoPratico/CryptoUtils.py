@@ -10,12 +10,16 @@ def gerar_chave(email, data_hora):
     chave = hashlib.sha256(base.encode()).digest()[:16]  # AES-128 (16 bytes)
     return chave
 
-def cifrar_dados(plain_text, chave):
-    iv = get_random_bytes(16)
+def cifrar_dados(plain_text: bytes, chave: bytes) -> bytes:
+    block_size = 16
+    iv = get_random_bytes(block_size)
     cipher = AES.new(chave, AES.MODE_CBC, iv)
-    padding_length = 16 - (len(plain_text) % 16)
-    padded_text = plain_text + chr(padding_length) * padding_length
-    cipher_text = cipher.encrypt(padded_text.encode())
+
+    padding_length = block_size - (len(plain_text) % block_size)
+    padding = bytes([padding_length] * padding_length)
+    padded_text = plain_text + padding
+    
+    cipher_text = cipher.encrypt(padded_text)
     return iv + cipher_text  # IV + CipherText
 
 def gerar_hmac(chave, mensagem_bytes):
@@ -28,5 +32,5 @@ def decifrar_dados(criptograma_bytes, chave):
     cipher = AES.new(chave, AES.MODE_CBC, iv)
     padded_data = cipher.decrypt(cipher_text)
     padding_length = padded_data[-1]
-    plain_text = padded_data[:-padding_length].decode()
+    plain_text = padded_data[:-padding_length]
     return plain_text

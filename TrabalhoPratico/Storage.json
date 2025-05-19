@@ -41,6 +41,12 @@
       "data_hora": "202505122330",
       "criptograma": "6f967c3a5921adc745bd3ddd34f84644c3329c9242cb9919c36182e9fce4bdcf",
       "hmac": "2b9830956ce9deb9328152d36f87dc5e128cb19bb0052cc3ec6ece84e79dda4a"
+    },
+    {
+      "email": "user2@example.com",
+      "data_hora": "202505200028",
+      "file_path": "uploads/202505200028_test.txt.enc",
+      "hmac": "977625b210661f824ce05e5411af4e0e832d25d0e20b0923604bd0460e9811b9"
     }
   ]
 }
