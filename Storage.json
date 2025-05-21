@@ -1,0 +1,73 @@
+{
+  "users": {
+    "teste@gmail.com": {
+      "salt": "58287bd3e6954582ae4225ae4e60c7c4",
+      "hash": "3f3c1573f01e2dc4d92b77ac4a99fc490b793dad66e103d28d8508003991d9f3",
+      "token": "23a678d25d1b476fb6f4e45e1d96525c"
+    },
+    "teste2@gmail.com": {
+      "salt": "d46b52287805452fa8e86d7cc9455e97",
+      "hash": "b098f2785001b70567d7be2635e770fe4952c23694d3c6dc07f37cc9283a3e82",
+      "token": "a7e86743bdda4243aa48d7c1f498e528"
+    }
+  },
+  "registos": [
+    {
+      "id": "10568c8108004caf9f4bd566b4292d06",
+      "email": "teste@gmail.com",
+      "data_hora": "2025-05-21 17:00",
+      "criptograma": "a893fb4e55668d293eb468ee98894ec892b24158759e949895341df6ffc4e5d811d267aeb874be82a0e9ef4f1afa9851",
+      "hmac": "7c69d027a02f84b353d2ff82071ff26e16bfad4b70b9c60855233ac6e7938875"
+    },
+    {
+      "id": "23f811a2bdcb4fbfa1cfe2d7d49f11ce",
+      "email": "teste@gmail.com",
+      "data_hora": "2025-05-21 19:00",
+      "criptograma": "22a9a3b9ac2af2e951ff5154b014e5b00d8fee1622e8651fb9470322fc321c685007118fb1142bb5f71c6ed1ee9d2a48e1e5b567979d793019b26e2019db7279",
+      "hmac": "1950598b4bbc0065b3475f8026ee9f8be97d3aabed8951ed3411f0bce580baf7"
+    },
+    {
+      "id": "afdd95e2461b4317ac97e6528e28e6c4",
+      "email": "teste@gmail.com",
+      "data_hora": "2025-05-21 19:00",
+      "criptograma": "6f8bdc2dbfd95b5054b93a29b09053e5023ed8852cc554af265261c313318a5869be53933badbc6cd248c006f36567f0",
+      "hmac": "be99c4484ea339b8e0d9b91e5b3b13fccbf05ce24b7c1b1924aefe82fa3cb8ff"
+    },
+    {
+      "id": "47abf8c0ffa848c29e06f031fd1e11eb",
+      "email": "teste2@gmail.com",
+      "data_hora": "2025-05-21 18:00",
+      "criptograma": "cece74da6d666cd10e253b51859b626808c6f56355a355a69540012f0584e28935d6538cef0879f4265ac25e3e53c4b2825c38cc8b672abbfd441a6e2aff3384f5f5c91c9644d20939bb27973239d982",
+      "hmac": "87eda2f3389555f95b1d48b6eb95a562eac5452e40b8e76286f600f98a2f8451",
+      "modo_cifra": "CBC",
+      "algoritmo_hmac": "SHA256"
+    },
+    {
+      "id": "dd941e8f6e704358b0e450a9a9156cf5",
+      "email": "teste2@gmail.com",
+      "data_hora": "2025-05-21 10:00",
+      "criptograma": "596aa1e3cbc36d86a98e71d33646edb83d55a5b25a76ee947243c02af312dbcfd37bce7e49c041308fd0fd18fedb7257e23fbd02f9484a71e71919905c365ffb15637b1fabe3c8cae61a91101b7826c9",
+      "hmac": "ed01cb60ede3f957ddaa65a46e85e60a7eeb16ece90ca64de6389c81f65bdfc9b9a28df74acc1cbf3f94cb99f9527a8876df150713a3cdf2871eeb606476a8ed",
+      "modo_cifra": "CBC",
+      "algoritmo_hmac": "SHA512"
+    },
+    {
+      "id": "0310bf43f6c94caba2ccddd71bc623de",
+      "email": "teste2@gmail.com",
+      "data_hora": "2025-05-21 17:00",
+      "criptograma": "4aeb5b8b040f1d2e23b7efdf3526b006ce692b8e01920d38fc5893c2ecf488212870ef5dc28ea3fe8edf093103ad9ac8f1b9bb99a0355b80c423e704be466aa1f206a2f9927846d61eb7c28e868178f8",
+      "hmac": "169f1698d69a1473022e06e1ca748d547a00837a84e0e05d13586b74e281fca9",
+      "modo_cifra": "CBC",
+      "algoritmo_hmac": "SHA256"
+    },
+    {
+      "id": "f8b3d220e18640e6b12d96bbab0204e4",
+      "email": "teste@gmail.com",
+      "data_hora": "2025-05-21 21:00",
+      "criptograma": "f6065ec00c6b0836fdf10e68d075b1978aff19cf6f5c95d618bad3b7",
+      "hmac": "24c720754c71eb259c054c6ce80c161ecf7abaf5d43f9d2e4dd1d74d872e880d4b15af5a1d398a5a29c3219b73aac30ff292b45c5b31792db545b3f69f4b5ec9",
+      "modo_cifra": "CTR",
+      "algoritmo_hmac": "SHA512"
+    }
+  ]
+}
