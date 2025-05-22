@@ -1,6 +1,3 @@
-HEAD
-# SEE-U-L4TER-Uma-C-psula-do-Tempo-Criptogr-fica
-
 
 # SEE-U-L4TER: Uma Cápsula do Tempo Criptográfica
 
@@ -17,13 +14,14 @@ As chaves são geradas dinamicamente a partir do email do utilizador, um segredo
 
 ## Funcionalidades
 
-- Registo e login de utilizadores com hash seguro das passwords.
+- Registo e login de utilizadores com hash seguro das passwords (SHA256 + salt).
 - Geração de chave AES baseada em email, segredo e data/hora.
-- Cifragem de ficheiros com AES-128 (modos CBC ou CTR).
+- Cifragem de ficheiros com AES-128 nos modos CBC ou CTR.
 - Validação da integridade via HMAC (SHA256 ou SHA512).
 - Armazenamento simples dos dados em ficheiro JSON (`Storage.json`).
 - Pastas separadas para ficheiros cifrados (`cifrados/`) e decifrados (`decifrados/`).
 - Interface CLI para operações fáceis e seguras.
+- Consulta da chave pública atual gerada dinamicamente sem necessidade de segredo.
 
 ---
 
@@ -48,7 +46,7 @@ Na pasta do projeto, executa:
 python app.py
 ```
 
-O servidor Flask ficará ativo e à espera de pedidos.
+O servidor Flask ficará ativo e à espera de pedidos na porta livre entre 5000 e 5050.
 
 ### 2. Executar o cliente CLI
 
@@ -66,7 +64,6 @@ O cliente tentará conectar ao servidor local e mostrar o menu interativo.
 
 - Registar utilizador: criar nova conta.
 - Login: autenticar utilizador.
-- Ver chave da data/hora atual (pública).
 - Sair: terminar o programa.
 
 #### Menu Autenticado (após login)
@@ -74,7 +71,7 @@ O cliente tentará conectar ao servidor local e mostrar o menu interativo.
 1. Cifrar ficheiro  
    - Indicar segredo pessoal.  
    - Indicar data e hora para decifragem (`YYYY-MM-DD HH:MM`).  
-   - Indicar caminho do ficheiro local a cifrar (ex: `cifrados/teste_de_cifra.txt`).  
+   - Indicar caminho do ficheiro local a cifrar.  
    - Escolher modo de cifra (CBC ou CTR).  
    - Escolher algoritmo HMAC (SHA256 ou SHA512).  
    - Confirmar operação.  
@@ -84,18 +81,13 @@ O cliente tentará conectar ao servidor local e mostrar o menu interativo.
    - Indicar segredo usado na cifragem.  
    - Indicar ID da mensagem cifrada.  
    - Confirmar operação.  
-   O ficheiro decifrado ficará guardado na pasta `decifrados/` com nome baseado no ID.
+   O ficheiro decifrado será guardado na pasta `decifrados/` com nome baseado no ID e extensão a definir.
 
 3. Listar mensagens disponíveis: ver mensagens cifradas associadas ao utilizador.
 
-4. Logout: terminar sessão.
+4. Ver chave pública da data/hora atual (sem segredo): gera e mostra uma chave derivada do email + data/hora atual, útil para consultas rápidas.
 
-### Nota sobre caminhos de ficheiros
-
-- O caminho deve ser acessível localmente pelo cliente CLI.  
-- Pode ser relativo à pasta atual ou absoluto.  
-- Exemplo: `cifrados/teste_de_cifra.txt` ou caminho absoluto Linux `/home/usuario/projeto/cifrados/teste_de_cifra.txt`.  
-- Se o ficheiro não existir, o cliente avisará para corrigir.
+5. Logout: terminar sessão.
 
 ---
 
@@ -109,19 +101,21 @@ O cliente tentará conectar ao servidor local e mostrar o menu interativo.
 ├── Storage.json            # Dados persistentes (utilizadores, mensagens)
 ├── cifrados/               # Ficheiros cifrados guardados
 ├── decifrados/             # Ficheiros decifrados guardados
-├── json_tests/             # Exemplos de testes JSON
 ├── Requirements.txt        # Dependências Python
 └── README.md               # Este ficheiro
 ```
 
 ---
 
-## Segurança
+## Notas de Segurança
 
-- Passwords com hash SHA256 + salt.  
-- Chaves baseadas em dados pessoais e temporais.  
-- IV aleatório e HMAC para proteger cifragem.  
-- Recomenda-se HTTPS em produção.
+- As passwords são armazenadas com hash SHA256 combinado com salt para maior segurança.  
+- As chaves para cifragem são derivadas de dados pessoais e temporais, protegendo a confidencialidade e temporalidade.  
+- Utiliza IV aleatório para o modo CBC e nonce para CTR, aumentando a segurança da cifra.  
+- O HMAC é usado para garantir integridade e autenticidade dos ficheiros cifrados.  
+- Em ambientes de produção, recomenda-se usar HTTPS para proteger a comunicação entre cliente e servidor.
 
 ---
-Implementação do sistema de cifragem com chave baseada em data/hora e interface cliente-servidor
+
+
+

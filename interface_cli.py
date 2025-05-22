@@ -47,8 +47,7 @@ def menu_principal():
     print(Fore.CYAN + "=== SEE-U-L4TER - CLIENTE CLI ===")
     print("1. Registar utilizador")
     print("2. Login")
-    print("3. Ver chave da data/hora atual (pública)")
-    print("4. Sair")
+    print("3. Sair")
 
 def menu_autenticado():
     clear_console()
@@ -56,7 +55,8 @@ def menu_autenticado():
     print("1. Cifrar ficheiro")
     print("2. Decifrar ficheiro")
     print("3. Listar mensagens disponíveis")
-    print("4. Logout")
+    print("4. Ver chave pública da data/hora atual (sem segredo)")
+    print("5. Logout")
 
 def registar():
     print(Fore.YELLOW + "== Registar Utilizador ==")
@@ -198,6 +198,14 @@ def decifrar():
                 with open(caminho_saida, 'wb') as f:
                     f.write(dados_decifrados)
                 print(Fore.GREEN + f"Ficheiro guardado em: {caminho_saida}")
+
+                extensao = input("Qual é a extensão original do ficheiro? (ex: .png, .jpg, .webp, .txt) ").strip()
+                if extensao and not extensao.startswith('.'):
+                    extensao = '.' + extensao
+                novo_caminho = os.path.splitext(caminho_saida)[0] + extensao
+                os.rename(caminho_saida, novo_caminho)
+                print(Fore.GREEN + f"Ficheiro renomeado para: {novo_caminho}")
+
             else:
                 print(Fore.RED + "Resposta do servidor não contém dados decifrados.")
         else:
@@ -207,19 +215,20 @@ def decifrar():
         print(Fore.RED + f"Resposta inválida do servidor: {e}")
     input("Pressione Enter para continuar...")
 
-def chave_atual():
-    clear_console()
-    print(Fore.YELLOW + "== Consulta Chave Atual ==")
-    email = input("Email: ").strip()
-    segredo = input("Segredo: ").strip()
-    params = {"email": email, "segredo": segredo}
-    resp = requests.get(f"{BASE_URL}/chave_atual", params=params)
+def chave_publica_atual():
+    if not email_logado:
+        print(Fore.RED + "Tem de fazer login primeiro.")
+        input("Pressione Enter para continuar...")
+        return
+    headers = {"Authorization": token}
+    params = {"email": email_logado}
+    resp = requests.get(f"{BASE_URL}/chave_publica_atual", params=params, headers=headers)
     try:
         data = resp.json()
         if resp.status_code == 200:
-            print(Fore.GREEN + f"Chave para {data.get('data_hora')}:\n{data.get('chave_hex')}")
+            print(Fore.GREEN + f"Chave pública para {data.get('data_hora')}:\n{data.get('chave_hex')}")
         else:
-            print(Fore.RED + data.get("erro", "Erro ao obter chave."))
+            print(Fore.RED + data.get("erro", "Erro ao obter chave pública."))
     except Exception:
         print(Fore.RED + "Resposta inválida do servidor.")
     input("Pressione Enter para continuar...")
@@ -260,8 +269,6 @@ def main():
             elif escolha == '2':
                 login()
             elif escolha == '3':
-                chave_atual()
-            elif escolha == '4':
                 print("A sair...")
                 break
             else:
@@ -276,6 +283,8 @@ def main():
             elif escolha == '3':
                 listar_mensagens()
             elif escolha == '4':
+                chave_publica_atual()
+            elif escolha == '5':
                 logout()
             else:
                 print(Fore.RED + "Opção inválida, tente novamente.")

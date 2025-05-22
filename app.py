@@ -13,10 +13,9 @@ from Crypto.Random import get_random_bytes
 app = Flask(__name__)
 
 STORAGE_FILE = "Storage.json"
+CIFRADOS_DIR = "cifrados"
+os.makedirs(CIFRADOS_DIR, exist_ok=True)
 
-# ---------------------------
-# Utilitários para Storage JSON
-# ---------------------------
 def load_storage():
     if not os.path.exists(STORAGE_FILE):
         return {"users": {}, "registos": []}
@@ -35,9 +34,6 @@ def save_storage(data):
     with open(STORAGE_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
-# ---------------------------
-# Segurança
-# ---------------------------
 def hash_password(password, salt=None):
     if salt is None:
         salt = uuid.uuid4().hex
@@ -105,10 +101,6 @@ def verificar_hmac(chave, mensagem_bytes, mac_hex, algoritmo='SHA256'):
     else:
         return False
     return hmac.compare_digest(mac_calculado, mac_hex)
-
-# ---------------------------
-# Endpoints
-# ---------------------------
 
 @app.route("/registar", methods=["POST"])
 def registar():
@@ -183,13 +175,17 @@ def cifrar():
     except Exception as e:
         return jsonify({"erro": f"Erro no cálculo do HMAC: {str(e)}"}), 500
 
-    criptograma_hex = criptograma.hex()
     msg_id = uuid.uuid4().hex
+    caminho_ficheiro = os.path.join(CIFRADOS_DIR, f"{msg_id}.bin")
+
+    with open(caminho_ficheiro, "wb") as f:
+        f.write(criptograma)
+
     registo = {
         "id": msg_id,
         "email": email,
         "data_hora": data_hora,
-        "criptograma": criptograma_hex,
+        "caminho_ficheiro": caminho_ficheiro,
         "hmac": mac_hex,
         "modo_cifra": modo_cifra,
         "algoritmo_hmac": algoritmo_hmac
@@ -223,7 +219,16 @@ def decifrar():
         return jsonify({"erro": "Sem permissão para aceder a esta mensagem"}), 403
 
     chave = gerar_chave(email, segredo, mensagem["data_hora"])
-    criptograma = bytes.fromhex(mensagem["criptograma"])
+    caminho_ficheiro = mensagem.get("caminho_ficheiro")
+    if not caminho_ficheiro or not os.path.exists(caminho_ficheiro):
+        return jsonify({"erro": "Ficheiro cifrado não encontrado no servidor"}), 404
+
+    try:
+        with open(caminho_ficheiro, "rb") as f:
+            criptograma = f.read()
+    except Exception:
+        return jsonify({"erro": "Erro ao ler ficheiro cifrado"}), 500
+
     mac_hex = mensagem["hmac"]
     modo_cifra = mensagem.get("modo_cifra", "CBC")
     algoritmo_hmac = mensagem.get("algoritmo_hmac", "SHA256")
@@ -248,11 +253,37 @@ def decifrar():
 def chave_atual():
     email = request.args.get("email")
     segredo = request.args.get("segredo")
+    token = request.headers.get("Authorization")
+
     if not email or not segredo:
         return jsonify({"erro": "Email e segredo são obrigatórios"}), 400
 
+    storage = load_storage()
+    user = storage["users"].get(email)
+    if not user or user.get("token") != token:
+        return jsonify({"erro": "Utilizador não autenticado"}), 401
+
     agora = datetime.now().strftime("%Y-%m-%d %H:%M")
     chave = gerar_chave(email, segredo, agora)
+    return jsonify({"data_hora": agora, "chave_hex": chave.hex()})
+
+@app.route("/chave_publica_atual", methods=["GET"])
+def chave_publica_atual():
+    email = request.args.get("email")
+    token = request.headers.get("Authorization")
+
+    if not email:
+        return jsonify({"erro": "Email é obrigatório"}), 400
+
+    storage = load_storage()
+    user = storage["users"].get(email)
+    if not user or user.get("token") != token:
+        return jsonify({"erro": "Utilizador não autenticado"}), 401
+
+    agora = datetime.now().strftime("%Y-%m-%d %H:%M")
+    base = f"{email}|{agora}"
+    chave = hashlib.sha256(base.encode()).digest()[:16]
+
     return jsonify({"data_hora": agora, "chave_hex": chave.hex()})
 
 @app.route("/mensagens", methods=["GET"])
