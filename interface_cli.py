@@ -5,6 +5,7 @@ from colorama import init, Fore
 import base64
 import getpass
 from datetime import datetime
+import re
 
 init(autoreset=True)
 
@@ -63,9 +64,16 @@ def menu_autenticado():
     print("4. Ver chave pública da data/hora atual (sem segredo)")
     print("5. Logout")
 
+def email_valido(email):
+    return re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email) is not None
+
 def registar():
     print(Fore.YELLOW + "== Registar Utilizador ==")
     email = input("Email: ").strip()
+    if not email_valido(email):
+        print(Fore.RED + "Email inválido")
+        input("Pressione Enter para continuar...")
+        return
     #password = input("Password: ").strip() pode ser lido no terminal (echoing)
     password = getpass.getpass("Password: ").strip()
     confirm_password = getpass.getpass("Confirmar Password: ").strip()
@@ -79,12 +87,16 @@ def registar():
         print(Fore.GREEN + data.get("sucesso", "Registo com sucesso!"))
     else:
         print(Fore.RED + data.get("erro", "Erro no registo."))
-    input("Pressione Enter para continuar...")
+        input("Pressione Enter para continuar...")
 
 def login():
     global token, email_logado
     print(Fore.YELLOW + "== Login ==")
     email = input("Email: ").strip()
+    if not email_valido(email):
+        print(Fore.RED + "Email inválido")
+        input("Pressione Enter para continuar...")
+        return
     #password = input("Password: ").strip()
     password = getpass.getpass("Password: ").strip()
     resp = requests.post(f"{BASE_URL}/login", json={"email": email, "password": password})
