@@ -4,8 +4,12 @@ import sys
 from colorama import init, Fore
 import base64
 import getpass
+from datetime import datetime
 
 init(autoreset=True)
+
+#Limite máximo de 1GB de ficheiros
+MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -106,6 +110,9 @@ def logout():
 def ler_ficheiro_bytes(caminho):
     try:
         with open(caminho, 'rb') as f:
+            if os.path.getsize(caminho) > MAX_FILE_SIZE:
+                print(Fore.RED + "Ficheiro demasiado grande")
+                return None
             return f.read()
     except Exception as e:
         print(Fore.RED + f"Erro a ler ficheiro: {e}")
@@ -122,6 +129,13 @@ def escolher_opcao_lista(mensagem, opcoes):
         else:
             print(Fore.YELLOW + "Opção inválida, tente novamente.")
 
+def ler_data_hora(input):
+    try:
+        return datetime.strptime(input, "%Y-%m-%d %H:%M")
+    except ValueError:
+        print(Fore.RED + "Formato inválido")
+        return None
+
 def cifrar():
     if not token:
         print(Fore.RED + "Tem de fazer login primeiro.")
@@ -129,7 +143,10 @@ def cifrar():
         return
     print(Fore.YELLOW + "== Cifrar Ficheiro ==")
     segredo = input("Segredo: ").strip()
-    data_hora = input("Data e hora (YYYY-MM-DD HH:MM): ").strip()
+    data_hora = ler_data_hora(input("Data e hora (YYYY-MM-DD HH:MM): ")).strftime("%Y-%m-%d %H:%M")
+    if not data_hora:
+        input("Pressione Enter para continuar...")
+        return
     caminho_ficheiro = input("Caminho do ficheiro a cifrar: ").strip()
 
     dados_bytes = ler_ficheiro_bytes(caminho_ficheiro)
