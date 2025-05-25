@@ -3,6 +3,7 @@ import os
 import sys
 from colorama import init, Fore
 import base64
+import getpass
 
 init(autoreset=True)
 
@@ -61,7 +62,13 @@ def menu_autenticado():
 def registar():
     print(Fore.YELLOW + "== Registar Utilizador ==")
     email = input("Email: ").strip()
-    password = input("Password: ").strip()
+    #password = input("Password: ").strip() pode ser lido no terminal (echoing)
+    password = getpass.getpass("Password: ").strip()
+    confirm_password = getpass.getpass("Confirmar Password: ").strip()
+    if password != confirm_password:
+        print("Password não coincide.")
+        input("Pressione Enter para voltar...")
+        return
     resp = requests.post(f"{BASE_URL}/registar", json={"email": email, "password": password})
     data = resp.json()
     if resp.status_code == 201:
@@ -74,7 +81,8 @@ def login():
     global token, email_logado
     print(Fore.YELLOW + "== Login ==")
     email = input("Email: ").strip()
-    password = input("Password: ").strip()
+    #password = input("Password: ").strip()
+    password = getpass.getpass("Password: ").strip()
     resp = requests.post(f"{BASE_URL}/login", json={"email": email, "password": password})
     data = resp.json()
     if resp.status_code == 200:
