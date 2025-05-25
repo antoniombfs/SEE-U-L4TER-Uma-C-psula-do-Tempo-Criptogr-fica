@@ -4,7 +4,7 @@ import sys
 from colorama import init, Fore
 import base64
 import getpass
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 init(autoreset=True)
@@ -142,11 +142,44 @@ def escolher_opcao_lista(mensagem, opcoes):
             print(Fore.YELLOW + "Opção inválida, tente novamente.")
 
 def ler_data_hora(input):
+    #Retorna a hora resultante depois de verificar o input
+    #Também retorna um bool caso o input seja data relativa
+    input = input.strip().lower()
+    data_atual = datetime.now()
+
+    #Data relativa - y:ano m:mes d:dia h:hora min:minuto
+    pattern = re.match(r"(\d+)(y|m|d|h|min)$", input)
+    if pattern:
+        amount = int(pattern.group(1))
+        unit = pattern.group(2)
+
+        if unit == 'y':
+            try:
+                return data_atual.replace(year=data_atual.year+amount), True
+            except ValueError:
+                #Dias inválidos em certos meses
+                return data_atual.replace(year=data_atual+amount, day=28), True
+        elif unit == 'm':
+            mes_total = data_atual.month + amount
+            ano = data_atual.year + (mes_total-1)//12
+            mes = (mes_total-1)%12+1
+            dia = min(data_atual.day,28)#Evita dias inválidos
+            try:
+                return data_atual.replace(year=ano, month=mes, day=dia), True
+            except ValueError:
+                return data_atual.replace(year=ano, month=mes, day=28), True
+        elif unit == 'd':
+            return data_atual + timedelta(days=amount), True
+        elif unit == 'h':
+            return data_atual + timedelta(hours=amount), True
+        elif unit == 'min':
+            return data_atual + timedelta(minutes=amount), True
+    #Formato completo
     try:
-        return datetime.strptime(input, "%Y-%m-%d %H:%M")
+        return datetime.strptime(input, "%Y-%m-%d %H:%M"), False
     except ValueError:
         print(Fore.RED + "Formato inválido")
-        return None
+        return None, False
 
 def cifrar():
     if not token:
@@ -155,10 +188,13 @@ def cifrar():
         return
     print(Fore.YELLOW + "== Cifrar Ficheiro ==")
     segredo = input("Segredo: ").strip()
-    data_hora = ler_data_hora(input("Data e hora (YYYY-MM-DD HH:MM): ")).strftime("%Y-%m-%d %H:%M")
+    data_hora, data_relativa = ler_data_hora(input("Data e hora (YYYY-MM-DD HH:MM)[Xy,Xm,Xd,Xh,Xmin]:\n"))
     if not data_hora:
         input("Pressione Enter para continuar...")
         return
+    data_hora = data_hora.strftime("%Y-%m-%d %H:%M")
+    if data_relativa:
+        print("Data: " + data_hora)
     caminho_ficheiro = input("Caminho do ficheiro a cifrar: ").strip()
 
     dados_bytes = ler_ficheiro_bytes(caminho_ficheiro)
