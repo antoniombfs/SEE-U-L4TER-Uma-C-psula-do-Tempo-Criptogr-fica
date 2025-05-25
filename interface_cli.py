@@ -263,7 +263,7 @@ def chave_publica_atual():
     try:
         data = resp.json()
         if resp.status_code == 200:
-            print(Fore.GREEN + f"Chave pública para {data.get('data_hora')}:\n{data.get('chave_hex')}")
+            print(Fore.GREEN + f"→Chave pública para {data.get('data_hora')}:\n {data.get('chave_hex')}")
         else:
             print(Fore.RED + data.get("erro", "Erro ao obter chave pública."))
     except Exception:
